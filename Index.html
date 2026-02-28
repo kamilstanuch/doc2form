@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #6C5CE7;
+        --primary-hover: #5A4BD1;
+        --primary-light: #EDE9FE;
+        --bg: #F8F7FF;
+        --surface: #FFFFFF;
+        --text: #1A1A2E;
+        --text-secondary: #6B7280;
+        --border: #E5E7EB;
+        --success: #059669;
+        --success-bg: #ECFDF5;
+        --error: #DC2626;
+        --error-bg: #FEF2F2;
+        --radius: 12px;
+        --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+        --shadow-lg: 0 4px 24px rgba(108,92,231,0.12);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 32px 16px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+        max-width: 540px;
+      }
+      .header .logo {
+        font-size: 40px;
+        margin-bottom: 8px;
+      }
+      .header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+      }
+      .header h1 span { color: var(--primary); }
+      .header p {
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .container {
+        background: var(--surface);
+        width: 100%;
+        max-width: 640px;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      /* --- Tabs --- */
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+      }
+      .tab {
+        flex: 1;
+        padding: 16px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        border-bottom: 2px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        user-select: none;
+      }
+      .tab:hover { color: var(--primary); background: var(--primary-light); }
+      .tab.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+        background: var(--primary-light);
+      }
+      .tab .material-icons-outlined { font-size: 20px; }
+
+      .tab-content { display: none; padding: 24px; }
+      .tab-content.active { display: block; }
+
+      /* --- Upload Tab --- */
+      .drop-zone {
+        border: 2px dashed var(--border);
+        border-radius: var(--radius);
+        padding: 40px 24px;
+        text-align: center;
+        transition: all 0.2s;
+        cursor: pointer;
+        background: #FAFAFE;
+      }
+      .drop-zone:hover, .drop-zone.dragover {
+        border-color: var(--primary);
+        background: var(--primary-light);
+      }
+      .drop-zone .material-icons-outlined {
+        font-size: 48px;
+        color: var(--primary);
+        opacity: 0.6;
+        margin-bottom: 12px;
+      }
+      .drop-zone:hover .material-icons-outlined { opacity: 1; }
+      .drop-zone-text {
+        font-size: 15px;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+      }
+      .drop-zone-hint {
+        font-size: 12px;
+        color: #9CA3AF;
+      }
+
+      .file-chip {
+        display: none;
+        margin-top: 16px;
+        background: var(--primary-light);
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 500;
+        color: var(--primary);
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .file-chip .remove {
+        cursor: pointer;
+        font-size: 18px;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+      }
+      .file-chip .remove:hover { opacity: 1; }
+
+      /* --- Describe Tab --- */
+      .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .template-card {
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .template-card:hover {
+        border-color: var(--primary);
+        background: var(--primary-light);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(108,92,231,0.1);
+      }
+      .template-card.selected {
+        border-color: var(--primary);
+        background: var(--primary-light);
+        box-shadow: 0 0 0 2px var(--primary);
+      }
+      .template-card .material-icons-outlined {
+        font-size: 22px;
+        color: var(--primary);
+        margin-top: 1px;
+        flex-shrink: 0;
+      }
+      .template-card .template-info { flex: 1; min-width: 0; }
+      .template-card .template-name {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+      .template-card .template-desc {
+        font-size: 11px;
+        color: var(--text-secondary);
+        line-height: 1.3;
+      }
+
+      /* --- Shared --- */
+      label.field-label {
+        display: block;
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 6px;
+        margin-top: 16px;
+      }
+
+      textarea {
+        width: 100%;
+        height: 100px;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        resize: vertical;
+        color: var(--text);
+        line-height: 1.5;
+        transition: border-color 0.2s;
+      }
+      textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,92,231,0.12); }
+      textarea::placeholder { color: #C4C4C4; }
+
+      /* --- Button --- */
+      .actions { padding: 0 24px 24px; }
+
+      .btn-generate {
+        width: 100%;
+        padding: 14px 24px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        font-family: inherit;
+      }
+      .btn-generate:hover { background: var(--primary-hover); box-shadow: var(--shadow-lg); }
+      .btn-generate:disabled { background: #D1D5DB; cursor: not-allowed; box-shadow: none; }
+
+      .spinner {
+        width: 20px; height: 20px;
+        border: 2.5px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: none;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* --- Result --- */
+      .result-box {
+        margin: 0 24px 24px;
+        padding: 20px;
+        border-radius: var(--radius);
+        display: none;
+        animation: slideUp 0.3s ease;
+      }
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .result-box.success { background: var(--success-bg); border: 1px solid #A7F3D0; }
+      .result-box.error { background: var(--error-bg); border: 1px solid #FECACA; }
+
+      .result-box.success .result-title {
+        color: var(--success);
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .result-box.error .result-title {
+        color: var(--error);
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .link-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .link-row:last-child { margin-bottom: 0; }
+      .link-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        min-width: 80px;
+      }
+      .link-row a {
+        color: var(--primary);
+        font-weight: 500;
+        font-size: 13px;
+        text-decoration: none;
+        word-break: break-all;
+      }
+      .link-row a:hover { text-decoration: underline; }
+
+      .btn-copy {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-family: inherit;
+        font-weight: 500;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+        width: auto;
+      }
+      .btn-copy:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+      .btn-copy:disabled { background: none; }
+      .btn-copy .material-icons-outlined { font-size: 14px; }
+
+      .footer {
+        margin-top: 24px;
+        text-align: center;
+        font-size: 12px;
+        color: #9CA3AF;
+      }
+      .footer a { color: var(--primary); text-decoration: none; }
+      .footer a:hover { text-decoration: underline; }
+
+      #fileInput { display: none; }
+
+      @media (max-width: 480px) {
+        .templates-grid { grid-template-columns: 1fr; }
+        .header h1 { font-size: 22px; }
+        body { padding: 20px 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">&#x1F4DD;</div>
+      <h1>Form<span>Fusion</span></h1>
+      <p>Turn any document into a Google Form in seconds &mdash; or describe the form you need and let AI build it for you.</p>
+    </div>
+
+    <div class="container">
+      <div class="tabs">
+        <div class="tab active" data-tab="upload" onclick="switchTab('upload')">
+          <span class="material-icons-outlined">upload_file</span>
+          Upload Document
+        </div>
+        <div class="tab" data-tab="describe" onclick="switchTab('describe')">
+          <span class="material-icons-outlined">auto_fix_high</span>
+          Describe a Form
+        </div>
+      </div>
+
+      <!-- Upload Tab -->
+      <div class="tab-content active" id="tab-upload">
+        <div class="drop-zone" id="dropZone">
+          <span class="material-icons-outlined">cloud_upload</span>
+          <div class="drop-zone-text">Drop a PDF or Word file here, or click to browse</div>
+          <div class="drop-zone-hint">Supports .pdf and .docx &mdash; max 5 MB</div>
+          <div class="file-chip" id="fileChip">
+            <span class="material-icons-outlined" style="font-size:18px;">description</span>
+            <span id="fileName">file.pdf</span>
+            <span class="material-icons-outlined remove" onclick="clearFile(event)">close</span>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+        <label class="field-label">Additional instructions (optional)</label>
+        <textarea id="uploadInstructions" placeholder="e.g. &quot;Make all questions required&quot; or &quot;Add a section for demographics&quot;"></textarea>
+      </div>
+
+      <!-- Describe Tab -->
+      <div class="tab-content" id="tab-describe">
+        <label class="field-label">Quick templates</label>
+        <div class="templates-grid" id="templatesGrid"></div>
+        <label class="field-label">Or describe your form</label>
+        <textarea id="describeText" placeholder="e.g. &quot;Create a 5-question customer satisfaction survey with rating scales and an open feedback field&quot;"></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button class="btn-generate" id="generateBtn" onclick="processForm()">
+          <span id="btnText">Generate Google Form</span>
+          <div id="spinner" class="spinner"></div>
+        </button>
+      </div>
+
+      <!-- Results -->
+      <div class="result-box success" id="successBox">
+        <div class="result-title">
+          <span class="material-icons-outlined">check_circle</span>
+          <span id="formTitle">Form created!</span>
+        </div>
+        <div class="link-row">
+          <span class="link-label">Share link</span>
+          <a id="publishedLink" href="#" target="_blank">Open form</a>
+          <button class="btn-copy" onclick="copyLink('publishedLink')">
+            <span class="material-icons-outlined">content_copy</span> Copy
+          </button>
+        </div>
+        <div class="link-row">
+          <span class="link-label">Edit link</span>
+          <a id="editLink" href="#" target="_blank">Edit in Forms</a>
+          <button class="btn-copy" onclick="copyLink('editLink')">
+            <span class="material-icons-outlined">content_copy</span> Copy
+          </button>
+        </div>
+      </div>
+      <div class="result-box error" id="errorBox">
+        <div class="result-title" id="errorText"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Powered by <a href="https://ai.google.dev/" target="_blank">Gemini AI</a> &amp; Google Forms
+    </div>
+
+    <script>
+      var dropZone = document.getElementById('dropZone');
+      var fileInput = document.getElementById('fileInput');
+      var fileChip = document.getElementById('fileChip');
+      var fileNameSpan = document.getElementById('fileName');
+      var selectedFile = null;
+      var currentTab = 'upload';
+      var selectedTemplatePrompt = '';
+
+      // ---- Tabs ----
+      function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab').forEach(function(t) {
+          t.classList.toggle('active', t.dataset.tab === tab);
+        });
+        document.querySelectorAll('.tab-content').forEach(function(c) {
+          c.classList.toggle('active', c.id === 'tab-' + tab);
+        });
+        document.getElementById('successBox').style.display = 'none';
+        document.getElementById('errorBox').style.display = 'none';
+      }
+
+      // ---- Templates ----
+      function loadTemplates() {
+        google.script.run
+          .withSuccessHandler(function(templates) {
+            var grid = document.getElementById('templatesGrid');
+            grid.innerHTML = '';
+            templates.forEach(function(t) {
+              var card = document.createElement('div');
+              card.className = 'template-card';
+              card.dataset.id = t.id;
+              card.innerHTML =
+                '<span class="material-icons-outlined">' + t.icon + '</span>' +
+                '<div class="template-info">' +
+                  '<div class="template-name">' + t.name + '</div>' +
+                  '<div class="template-desc">' + t.description + '</div>' +
+                '</div>';
+              card.addEventListener('click', function() {
+                selectTemplate(t, card);
+              });
+              grid.appendChild(card);
+            });
+          })
+          .getPromptTemplates();
+      }
+
+      function selectTemplate(template, card) {
+        document.querySelectorAll('.template-card').forEach(function(c) {
+          c.classList.remove('selected');
+        });
+        if (selectedTemplatePrompt === template.prompt) {
+          selectedTemplatePrompt = '';
+          document.getElementById('describeText').value = '';
+          return;
+        }
+        card.classList.add('selected');
+        selectedTemplatePrompt = template.prompt;
+        document.getElementById('describeText').value = template.prompt;
+      }
+
+      // ---- File Handling ----
+      dropZone.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove')) return;
+        fileInput.click();
+      });
+
+      dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+      dropZone.addEventListener('dragleave', function() {
+        dropZone.classList.remove('dragover');
+      });
+      dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+      });
+
+      fileInput.addEventListener('change', function(e) {
+        if (e.target.files.length) handleFile(e.target.files[0]);
+      });
+
+      function handleFile(file) {
+        var isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        var isWord = file.name.toLowerCase().endsWith('.docx') || file.type.indexOf('wordprocessingml') !== -1;
+
+        if (!isPdf && !isWord) {
+          showError('Please upload a PDF or .docx file.');
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          showError('File too large — maximum is 5 MB.');
+          return;
+        }
+
+        selectedFile = file;
+        fileNameSpan.innerText = file.name;
+        dropZone.querySelector('.drop-zone-text').style.display = 'none';
+        dropZone.querySelector('.drop-zone-hint').style.display = 'none';
+        dropZone.querySelector('.material-icons-outlined').style.display = 'none';
+        fileChip.style.display = 'flex';
+      }
+
+      function clearFile(e) {
+        if (e) e.stopPropagation();
+        selectedFile = null;
+        fileInput.value = '';
+        dropZone.querySelector('.drop-zone-text').style.display = 'block';
+        dropZone.querySelector('.drop-zone-hint').style.display = 'block';
+        dropZone.querySelector('.material-icons-outlined').style.display = 'block';
+        fileChip.style.display = 'none';
+      }
+
+      // ---- Form Generation ----
+      function processForm() {
+        var btn = document.getElementById('generateBtn');
+        var spinner = document.getElementById('spinner');
+        var text, file;
+
+        document.getElementById('successBox').style.display = 'none';
+        document.getElementById('errorBox').style.display = 'none';
+
+        if (currentTab === 'upload') {
+          text = document.getElementById('uploadInstructions').value;
+          file = selectedFile;
+          if (!text.trim() && !file) {
+            showError('Upload a file or enter instructions.');
+            return;
+          }
+        } else {
+          text = document.getElementById('describeText').value;
+          file = null;
+          if (!text.trim()) {
+            showError('Describe the form you need or pick a template.');
+            return;
+          }
+        }
+
+        btn.disabled = true;
+        document.getElementById('btnText').innerText = 'Generating...';
+        spinner.style.display = 'block';
+
+        if (file) {
+          var isWord = file.name.toLowerCase().endsWith('.docx') || file.type.indexOf('wordprocessingml') !== -1;
+          var reader = new FileReader();
+
+          reader.onload = function(e) {
+            if (isWord) {
+              mammoth.extractRawText({ arrayBuffer: e.target.result })
+                .then(function(result) {
+                  var combined = (text ? 'Instructions: ' + text + '\n\n' : '') + 'Document Content:\n' + result.value;
+                  sendToBackend(combined, null);
+                })
+                .catch(function(err) {
+                  showError('Could not read Word file: ' + err.message);
+                  resetUI();
+                });
+            } else {
+              var base64Data = e.target.result.split(',')[1];
+              sendToBackend(text, { mimeType: 'application/pdf', data: base64Data });
+            }
+          };
+
+          if (isWord) {
+            reader.readAsArrayBuffer(file);
+          } else {
+            reader.readAsDataURL(file);
+          }
+        } else {
+          sendToBackend(text, null);
+        }
+      }
+
+      function sendToBackend(text, fileData) {
+        google.script.run
+          .withSuccessHandler(function(response) {
+            if (response.success) {
+              document.getElementById('formTitle').innerText = response.title || 'Form created!';
+              document.getElementById('publishedLink').href = response.publishedUrl;
+              document.getElementById('publishedLink').innerText = 'Open form';
+              document.getElementById('editLink').href = response.editUrl;
+              document.getElementById('editLink').innerText = 'Edit in Google Forms';
+              document.getElementById('successBox').style.display = 'block';
+            } else {
+              showError(response.error);
+            }
+            resetUI();
+          })
+          .withFailureHandler(function(err) {
+            showError(err.message || 'Something went wrong. Please try again.');
+            resetUI();
+          })
+          .generateFormSmart(text, fileData);
+      }
+
+      function showError(msg) {
+        var box = document.getElementById('errorBox');
+        document.getElementById('errorText').innerText = msg;
+        box.style.display = 'block';
+      }
+
+      function resetUI() {
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('generateBtn').disabled = false;
+        document.getElementById('btnText').innerText = 'Generate Google Form';
+      }
+
+      function copyLink(linkId) {
+        var url = document.getElementById(linkId).href;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(function() {
+            showCopiedFeedback(linkId);
+          });
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = url;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showCopiedFeedback(linkId);
+        }
+      }
+
+      function showCopiedFeedback(linkId) {
+        var btn = document.querySelector('[onclick="copyLink(\'' + linkId + '\')"]');
+        if (!btn) return;
+        var original = btn.innerHTML;
+        btn.innerHTML = '<span class="material-icons-outlined" style="font-size:14px">done</span> Copied';
+        btn.disabled = true;
+        setTimeout(function() {
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }, 2000);
+      }
+
+      loadTemplates();
+    </script>
+  </body>
+</html>

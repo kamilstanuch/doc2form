@@ -11,6 +11,10 @@
 
 No servers. No hosting. No costs beyond the free Gemini API. Runs entirely inside your Google account.
 
+<p align="center">
+  <img src="screenshots/doc2form-ui.png" alt="Doc2Form UI" width="600">
+</p>
+
 ---
 
 ## How It Works
@@ -96,6 +100,10 @@ No servers. No hosting. No costs beyond the free Gemini API. Runs entirely insid
 
 > **To edit `appsscript.json`:** Click the gear icon (⚙️ Project Settings) → check **"Show 'appsscript.json' manifest file in editor"** → go back to Editor and edit the file.
 
+<p align="center">
+  <img src="screenshots/apps-script-setup.png" alt="Google Apps Script setup" width="600">
+</p>
+
 ### 3. Add Your API Key
 
 1. In Apps Script, click ⚙️ **Project Settings**
@@ -139,6 +147,7 @@ See `.clasp.json.example` for the config format.
 ├── Prompts.gs         # Predefined prompt templates (easy to customize)
 ├── Index.html         # Frontend UI — tabs, file upload, templates, results
 ├── appsscript.json    # Apps Script manifest (scopes, runtime config)
+├── screenshots/       # README images
 └── README.md
 ```
 

@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Google Apps Script](https://img.shields.io/badge/Platform-Google%20Apps%20Script-4285F4?logo=google&logoColor=white)](https://script.google.com)
 [![Gemini AI](https://img.shields.io/badge/AI-Gemini%202.5-8E75B2?logo=google&logoColor=white)](https://ai.google.dev/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/your-username/doc2form/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/kamilstanuch/doc2form/pulls)
 
 > Tired of receiving PDFs and Word docs that should've been a Google Form? Same.
 

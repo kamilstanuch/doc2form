@@ -1,18 +1,77 @@
-# FormFusion — Turn Documents & Ideas into Google Forms with AI
+# 📄 Doc2Form — Turn any PDF, Word, or text into a Google Form
 
-Tired of receiving PDFs and Word docs that should've been a Google Form? Same.
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Google Apps Script](https://img.shields.io/badge/Platform-Google%20Apps%20Script-4285F4?logo=google&logoColor=white)](https://script.google.com)
+[![Gemini AI](https://img.shields.io/badge/AI-Gemini%202.5-8E75B2?logo=google&logoColor=white)](https://ai.google.dev/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/your-username/doc2form/pulls)
 
-**FormFusion** is a free, open-source Google Apps Script tool that uses Gemini AI to convert any document (PDF, Word) into a fully functional Google Form — or just describe the form you want, and it builds it for you.
+> Tired of receiving PDFs and Word docs that should've been a Google Form? Same.
+
+**Doc2Form** is a free, open-source Google Apps Script that uses Gemini AI to convert any document (PDF, Word) into a fully functional Google Form — or just describe the form you want, and it builds it for you.
 
 No servers. No hosting. No costs beyond the free Gemini API. Runs entirely inside your Google account.
 
-## What it does
+---
 
-- **Upload a PDF or Word (.docx)** → AI reads it, extracts the questions, and creates a Google Form
-- **Describe a form in plain English** → "Create a 10-question customer feedback survey" → done
-- **Pick from templates** → Pre-built prompts for common forms (feedback, RSVP, job applications, etc.)
-- **Supports 10+ question types** → Short answer, paragraph, multiple choice, checkboxes, dropdowns, linear scales, date, time, grids, and section headers
-- **Returns both links** → Edit link (for you) and share link (for respondents), with one-click copy
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                          YOU                                    │
+│                                                                 │
+│   ┌──────────────┐     OR     ┌──────────────────────────┐      │
+│   │  📄 Upload   │           │  ✏️  Describe a form      │      │
+│   │  PDF / Word  │           │  "Create a feedback       │      │
+│   │              │           │   survey with scales..."   │      │
+│   └──────┬───────┘           └────────────┬──────────────┘      │
+└──────────┼────────────────────────────────┼─────────────────────┘
+           │                                │
+           ▼                                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   Google Apps Script                             │
+│                                                                 │
+│   .docx → Mammoth.js extracts text                              │
+│   .pdf  → sent as base64 binary                                 │
+│                                                                 │
+│          ┌────────────────────────────┐                          │
+│          │  🤖 Gemini AI              │                          │
+│          │  Analyzes content →        │                          │
+│          │  Returns structured JSON   │                          │
+│          │  with questions, types,    │                          │
+│          │  options, and settings     │                          │
+│          └────────────┬───────────────┘                          │
+│                       │                                         │
+│                       ▼                                         │
+│          ┌────────────────────────────┐                          │
+│          │  📋 Google Forms API       │                          │
+│          │  Builds the form with      │                          │
+│          │  11 question types,        │                          │
+│          │  sections, and validation  │                          │
+│          └────────────┬───────────────┘                          │
+└───────────────────────┼─────────────────────────────────────────┘
+                        │
+                        ▼
+          ┌──────────────────────────────┐
+          │  ✅ Your Google Form         │
+          │                              │
+          │  📝 Edit link (for you)      │
+          │  🔗 Share link (for others)  │
+          │  📋 One-click copy           │
+          └──────────────────────────────┘
+```
+
+---
+
+## Features
+
+| | Feature | |
+|---|---|---|
+| 📄 | **Upload PDF or Word** | AI reads it, extracts fields, builds a form |
+| ✏️ | **Describe in plain English** | "Create a 10-question feedback survey" → done |
+| 🎯 | **8 ready-made templates** | Feedback, RSVP, job application, quiz, and more |
+| 📊 | **11 question types** | Short answer, scales, grids, dates, dropdowns... |
+| 🔗 | **Both links returned** | Edit link + share link with one-click copy |
+| 🆓 | **100% free** | No server, no hosting, no costs |
 
 ## Setup (5 minutes)
 
@@ -52,12 +111,12 @@ No servers. No hosting. No costs beyond the free Gemini API. Runs entirely insid
 1. Click **Deploy** → **New deployment**
 2. Click the gear icon → select **Web app**
 3. Set:
-   - Description: `FormFusion`
+   - Description: `Doc2Form`
    - Execute as: **Me**
    - Who has access: **Anyone** (or restrict as needed)
 4. Click **Deploy**
 5. Authorize the app when prompted
-6. Copy the web app URL — that's your FormFusion!
+6. Copy the web app URL — that's your Doc2Form!
 
 ## Alternative: Use `clasp` (for developers)
 
@@ -66,7 +125,7 @@ If you prefer working locally with version control:
 ```bash
 npm install -g @google/clasp
 clasp login
-clasp create --type webapp --title "FormFusion"
+clasp create --type webapp --title "Doc2Form"
 clasp push
 clasp deploy
 ```
@@ -126,14 +185,6 @@ var model = 'gemini-2.5-pro';     // More powerful, slower
 | `CHECKBOX_GRID` | Grid with checkboxes |
 | `SECTION_HEADER` | Page/section break |
 
-## How It Works
-
-1. **You** upload a document or describe a form
-2. **Mammoth.js** extracts text from Word files client-side; PDFs are sent as base64 to Gemini
-3. **Gemini AI** analyzes the content and returns structured JSON with form questions, types, and options
-4. **Google Apps Script** builds the form using the Forms API
-5. **You** get both the edit link and the shareable form link
-
 ## Limitations
 
 - **File size:** 5 MB max (Apps Script constraint)
@@ -151,6 +202,19 @@ PRs welcome! Some ideas:
 - [ ] Export form structure as JSON
 - [ ] Dark mode
 
+## Built With
+
+| | Technology | Role |
+|---|---|---|
+| ![Google Apps Script](https://img.shields.io/badge/-Apps%20Script-4285F4?logo=google&logoColor=white&style=flat-square) | Google Apps Script | Runtime & hosting |
+| ![Gemini](https://img.shields.io/badge/-Gemini%20AI-8E75B2?logo=google&logoColor=white&style=flat-square) | Gemini 2.5 Flash | Document analysis & form structuring |
+| ![Google Forms](https://img.shields.io/badge/-Google%20Forms-673AB7?logo=googleforms&logoColor=white&style=flat-square) | Google Forms API | Form creation |
+| ![Mammoth](https://img.shields.io/badge/-Mammoth.js-333?style=flat-square) | Mammoth.js | Word (.docx) text extraction |
+
 ## License
 
 MIT — do whatever you want with it. See [LICENSE](LICENSE).
+
+---
+
+If this saved you from another PDF form, consider giving it a star.

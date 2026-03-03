@@ -3,7 +3,7 @@
  */
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('FormFusion — AI Form Generator')
+    .setTitle('Doc2Form — AI Form Generator')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 

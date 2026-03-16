@@ -202,12 +202,12 @@ function createGoogleForm(data) {
         if (q.options && q.options.length > 0) item.setChoiceValues(q.options);
         break;
 
-      case 'LINEAR_SCALE':
+      case 'LINEAR_SCALE': {
         item = form.addScaleItem();
         item.setBounds(q.scaleMin || 1, q.scaleMax || 5);
-        if (q.scaleMinLabel) item.setLeftLabel(q.scaleMinLabel);
-        if (q.scaleMaxLabel) item.setRightLabel(q.scaleMaxLabel);
+        item.setLabels(q.scaleMinLabel || '', q.scaleMaxLabel || '');
         break;
+      }
 
       case 'DATE':
         item = form.addDateItem();

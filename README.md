@@ -12,7 +12,7 @@
 No servers. No hosting. No costs beyond the free Gemini API. Runs entirely inside your Google account.
 
 <p align="center">
-  <img src="screenshots/doc2form-ui.png" alt="Doc2Form UI" width="600">
+  <img src="screenshots/doc2form-demo720_pdf.gif" alt="Doc2Form demo: upload a PDF and generate a Google Form" width="720">
 </p>
 
 ---
@@ -147,7 +147,7 @@ See `.clasp.json.example` for the config format.
 ├── Prompts.gs         # Predefined prompt templates (easy to customize)
 ├── Index.html         # Frontend UI — tabs, file upload, templates, results
 ├── appsscript.json    # Apps Script manifest (scopes, runtime config)
-├── screenshots/       # README images
+├── screenshots/       # README images & demo GIF
 └── README.md
 ```
 

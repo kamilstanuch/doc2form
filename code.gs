@@ -57,6 +57,65 @@ function validateFormData(data) {
 }
 
 /**
+ * Google Forms ScaleItem: lower must be 0 or 1; upper must be 3–10 (inclusive). See setBounds docs.
+ */
+function clampScaleBounds(low, high) {
+  var lo = Math.round(Number(low));
+  var hi = Math.round(Number(high));
+  if (!isFinite(lo) || (lo !== 0 && lo !== 1)) {
+    lo = 1;
+  }
+  if (!isFinite(hi)) {
+    hi = 5;
+  }
+  if (hi < 3) {
+    hi = 3;
+  }
+  if (hi > 10) {
+    hi = 10;
+  }
+  if (hi <= lo) {
+    hi = Math.min(10, Math.max(3, lo + 2));
+  }
+  return [lo, hi];
+}
+
+/** Non-empty trimmed strings from an array (Gemini may omit, duplicate, or use numbers). */
+function sanitizeStringArray(arr) {
+  if (!arr || !Array.isArray(arr)) {
+    return [];
+  }
+  return arr.map(function(s) {
+    return String(s == null ? '' : s).trim();
+  }).filter(function(s) {
+    return s.length > 0;
+  });
+}
+
+/** Multiple choice / checkbox / dropdown need at least 2 choices in practice; never pass empty to setChoiceValues. */
+function ensureChoiceOptions(options, fallbackPrefix) {
+  var opts = sanitizeStringArray(options);
+  var prefix = fallbackPrefix || 'Option';
+  while (opts.length < 2) {
+    opts.push(prefix + ' ' + (opts.length + 1));
+  }
+  return opts;
+}
+
+/** Grid setRows / setColumns throw on empty arrays; both axes are required. */
+function ensureGridAxes(rows, columns) {
+  var r = sanitizeStringArray(rows);
+  var c = sanitizeStringArray(columns);
+  if (r.length === 0) {
+    r = ['Row 1', 'Row 2'];
+  }
+  if (c.length === 0) {
+    c = ['A', 'B', 'C'];
+  }
+  return { rows: r, columns: c };
+}
+
+/**
  * Calls Gemini API. Handles text-only, PDF (multimodal), and Word (pre-extracted text).
  */
 function callGemini(text, fileData) {
@@ -122,7 +181,12 @@ function callGemini(text, fileData) {
     throw new Error('Unexpected response from Gemini. The model may have refused the request.');
   }
 
-  return JSON.parse(jsonResponse.candidates[0].content.parts[0].text);
+  var raw = jsonResponse.candidates[0].content.parts[0].text;
+  try {
+    return JSON.parse(raw);
+  } catch (parseErr) {
+    throw new Error('Could not parse AI response as JSON. Try again or shorten the document.');
+  }
 }
 
 /**
@@ -156,7 +220,9 @@ var GEMINI_SYSTEM_PROMPT = [
   'Rules:',
   '- "options" only for MULTIPLE_CHOICE, CHECKBOX, DROPDOWN',
   '- "scaleMin", "scaleMax", "scaleMinLabel", "scaleMaxLabel" only for LINEAR_SCALE',
+  '- For LINEAR_SCALE: scaleMin must be 0 or 1 only; scaleMax must be an integer from 3 to 10 (Google Forms rule)',
   '- "rows" and "columns" only for MULTIPLE_CHOICE_GRID and CHECKBOX_GRID',
+  '- Grids must each have at least two non-empty row labels and two non-empty column labels',
   '- SECTION_HEADER creates a visual page/section break with title and optional helpText as description',
   '- Default "required" to true for important fields, false for optional ones',
   '- Choose the most appropriate question type for each field',
@@ -189,24 +255,27 @@ function createGoogleForm(data) {
 
       case 'MULTIPLE_CHOICE':
         item = form.addMultipleChoiceItem();
-        if (q.options && q.options.length > 0) item.setChoiceValues(q.options);
+        item.setChoiceValues(ensureChoiceOptions(q.options, 'Choice'));
         break;
 
       case 'CHECKBOX':
         item = form.addCheckboxItem();
-        if (q.options && q.options.length > 0) item.setChoiceValues(q.options);
+        item.setChoiceValues(ensureChoiceOptions(q.options, 'Option'));
         break;
 
       case 'DROPDOWN':
         item = form.addListItem();
-        if (q.options && q.options.length > 0) item.setChoiceValues(q.options);
+        item.setChoiceValues(ensureChoiceOptions(q.options, 'Option'));
         break;
 
       case 'LINEAR_SCALE':
         item = form.addScaleItem();
-        item.setBounds(q.scaleMin || 1, q.scaleMax || 5);
-        if (q.scaleMinLabel) item.setLeftLabel(q.scaleMinLabel);
-        if (q.scaleMaxLabel) item.setRightLabel(q.scaleMaxLabel);
+        var bounds = clampScaleBounds(q.scaleMin, q.scaleMax);
+        item.setBounds(bounds[0], bounds[1]);
+        // ScaleItem uses setLabels(lower, upper) — not setLeftLabel / setRightLabel
+        if (q.scaleMinLabel || q.scaleMaxLabel) {
+          item.setLabels(q.scaleMinLabel || '', q.scaleMaxLabel || '');
+        }
         break;
 
       case 'DATE':
@@ -219,14 +288,16 @@ function createGoogleForm(data) {
 
       case 'MULTIPLE_CHOICE_GRID':
         item = form.addGridItem();
-        if (q.rows && q.rows.length > 0) item.setRows(q.rows);
-        if (q.columns && q.columns.length > 0) item.setColumns(q.columns);
+        var gridAxes = ensureGridAxes(q.rows, q.columns);
+        item.setRows(gridAxes.rows);
+        item.setColumns(gridAxes.columns);
         break;
 
       case 'CHECKBOX_GRID':
         item = form.addCheckboxGridItem();
-        if (q.rows && q.rows.length > 0) item.setRows(q.rows);
-        if (q.columns && q.columns.length > 0) item.setColumns(q.columns);
+        var cbAxes = ensureGridAxes(q.rows, q.columns);
+        item.setRows(cbAxes.rows);
+        item.setColumns(cbAxes.columns);
         break;
 
       case 'SECTION_HEADER':

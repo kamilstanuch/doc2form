@@ -9,7 +9,7 @@
 
 **Doc2Form** is a free, open-source Google Apps Script that uses Gemini AI to convert any document (PDF, Word) into a fully functional Google Form — or just describe the form you want, and it builds it for you.
 
-No servers. No hosting. No costs beyond the free Gemini API. Runs entirely inside your Google account.
+No servers. No hosting. No costs beyond the free Gemini API. Runs entirely inside your Google account. A hosted version with no setup required is available at [doc2form.dev](https://doc2form.dev).
 
 <!-- Demo GIFs (720px): doc2form-demo720_pdf.gif = Upload tab; doc2form-demo720_prompt.gif = Describe a form tab -->
 
@@ -86,6 +86,8 @@ No servers. No hosting. No costs beyond the free Gemini API. Runs entirely insid
 | 🆓 | **100% free** | No server, no hosting, no costs |
 
 ## Setup (5 minutes)
+
+> **Prefer to skip this?** [doc2form.dev](https://doc2form.dev) is a hosted version — no API keys, no deployment, no configuration needed.
 
 ### 1. Get a Gemini API Key
 

@@ -1,6 +1,6 @@
-<h1 align="center">Doc2Form</h1>
+<h1 align="center">Doc2Form — Convert PDF, Word &amp; Docs to Google Forms with Gemini AI (Free)</h1>
 
-<p align="center"><strong>Convert PDF, Word & Docs to Google Forms with Gemini AI — free, open source, runs entirely in your Google account.</strong></p>
+<p align="center"><em>Open source · Runs in your Google account · No separate server</em></p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>

@@ -1,15 +1,71 @@
-# 📄 Doc2Form — Turn any PDF, Word, or text into a Google Form
+<h1 align="center">Doc2Form</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Google Apps Script](https://img.shields.io/badge/Platform-Google%20Apps%20Script-4285F4?logo=google&logoColor=white)](https://script.google.com)
-[![Gemini AI](https://img.shields.io/badge/AI-Gemini%202.5-8E75B2?logo=google&logoColor=white)](https://ai.google.dev/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/kamilstanuch/doc2form/pulls)
+<p align="center"><strong>Convert PDF, Word & Docs to Google Forms with Gemini AI — free, open source, runs entirely in your Google account.</strong></p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
+  <a href="https://script.google.com"><img src="https://img.shields.io/badge/Platform-Google%20Apps%20Script-4285F4?logo=google&logoColor=white" alt="Google Apps Script"></a>
+  <a href="https://ai.google.dev/"><img src="https://img.shields.io/badge/AI-Gemini%202.5-8E75B2?logo=google&logoColor=white" alt="Gemini AI"></a>
+  <a href="https://github.com/kamilstanuch/doc2form/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+</p>
+
+<p align="center">
+  <a href="#what-is-doc2form">What is Doc2Form?</a>
+  &nbsp;·&nbsp;
+  <a href="#how-it-works">How it works</a>
+  &nbsp;·&nbsp;
+  <a href="#features">Features</a>
+  &nbsp;·&nbsp;
+  <a href="#demos">Demos</a>
+  &nbsp;·&nbsp;
+  <a href="#setup-5-minutes">Setup</a>
+  &nbsp;·&nbsp;
+  <a href="#use-cases">Use cases</a>
+  &nbsp;·&nbsp;
+  <a href="#faq">FAQ</a>
+  &nbsp;·&nbsp;
+  <a href="#project-structure">Project structure</a>
+  &nbsp;·&nbsp;
+  <a href="#customization">Customization</a>
+  &nbsp;·&nbsp;
+  <a href="#contributing">Contributing</a>
+</p>
+
+---
+
+## What is Doc2Form?
 
 > Tired of receiving PDFs and Word docs that should've been a Google Form? Same.
 
-**Doc2Form** is a free, open-source Google Apps Script that uses Gemini AI to convert any document (PDF, Word) into a fully functional Google Form — or just describe the form you want, and it builds it for you.
+**Doc2Form** is a free, open-source **Google Apps Script** that uses **Gemini AI** to turn any **PDF** or **Word** file into a fully functional **Google Form** — or you **describe the form in plain English** and it builds it for you.
 
-No servers. No hosting. No costs beyond the free Gemini API. Runs entirely inside your Google account. A hosted version with no setup required is available at [doc2form.dev](https://doc2form.dev).
+Use it to **convert PDF to Google Form**, **Word to Google Form**, or **build a form from a plain-English prompt** — powered by **Gemini AI** and the **Google Forms API**, with **no separate server**.
+
+No servers. No hosting. No costs beyond the free Gemini API tier. Everything stays inside **your** Google account. Prefer zero setup? Use the hosted app at **[doc2form.dev](https://doc2form.dev)**.
+
+**The core idea:** upload a document *or* type what you need; Gemini returns structured form data; the **Google Forms API** creates the form you can edit and share.
+
+## Use cases
+
+- **Educators** — Turn quiz PDFs, worksheets, and Word tests into Google Forms.
+- **HR & recruiters** — Digitize intake and application PDFs without retyping every field.
+- **Developers** — Generate forms from Apps Script with Gemini; data stays in the deployer’s Google account.
+
+## FAQ
+
+### How do I convert a PDF to a Google Form?
+
+Upload the PDF in your deployed web app (see setup below). Doc2Form sends content to Gemini for structure, then creates the form via the Google Forms API. The same flow works for **Word (.docx)** files.
+
+### Is there a free PDF to Google Form tool?
+
+Yes. This project is MIT-licensed and free to run; you use your own **free Gemini API** tier. Processing happens in **your** Google Workspace context—not on a third-party document host.
+
+### Can I create a form without uploading a file?
+
+Yes. Use the **Describe a form** tab: type what you need (for example, a feedback survey with scales), and Gemini builds the form structure. That **plain English → Google Form** path is one of Doc2Form’s strengths.
+
+## Demos
 
 <!-- Demo GIFs (720px): doc2form-demo720_pdf.gif = Upload tab; doc2form-demo720_prompt.gif = Describe a form tab -->
 
